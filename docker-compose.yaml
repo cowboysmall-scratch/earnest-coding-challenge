@@ -1,0 +1,4 @@
+random:
+  image: maguirebrendan/random:0.0.2
+  ports:
+    - 5000:5000
