@@ -7,8 +7,8 @@ import requests
 def row_string(row):
     return '  {} | {} | {}  \n'.format(row[0], row[1], row[2])
 
-def board_string(places):
-    return ' ---+---+--- \n'.join([row_string(places[(i * 3):(i * 3) + 3]) for i in range(3)]) + '\n'
+def board_string(board):
+    return ' ---+---+--- \n'.join([row_string(board[(i * 3):(i * 3) + 3]) for i in range(3)]) + '\n'
 
 
 
@@ -25,58 +25,51 @@ def get_move(values):
 
 
 
-def legal_positions(places):
-    return [i for i in range(len(places)) if places[i] == '.']
+def legal_positions(board):
+    return [i for i in range(len(board)) if board[i] == '.']
 
-def make_move(places, position, player):
-    return [player if i == position else places[i] for i in range(len(places))], next_player(player)
-
-
-
-
-def next_player(player):
-    return 'X' if player == 'O' else 'O'
+def move(board, position, player):
+    return [player if i == position else board[i] for i in range(len(board))], 'X' if player == 'O' else 'O'
 
 
 
 
-def has_row(places, player):
-    return any(places[(i * 3):(i * 3) + 3].count(player) == 3 for i in range(3))
+def has_row(board, player):
+    return any(board[(i * 3):(i * 3) + 3].count(player) == 3 for i in range(3))
 
-def has_column(places, player):
-    return any([places[i], places[i + 3], places[i + 6]].count(player) == 3 for i in range(3))
+def has_column(board, player):
+    return any([board[i], board[i + 3], board[i + 6]].count(player) == 3 for i in range(3))
 
-def has_diagonal(places, player):
-    return [places[0], places[4], places[8]].count(player) == 3 or [places[2], places[4], places[6]].count(player) == 3
-
-
+def has_diagonal(board, player):
+    return [board[0], board[4], board[8]].count(player) == 3 or [board[2], board[4], board[6]].count(player) == 3
 
 
-def board_win(places):
-    return any([has_row(places, player) or has_column(places, player) or has_diagonal(places, player) for player in ['X', 'O']])
 
-def board_full(places):
-    return len([p for p in places if p == '.']) == 0
 
-def game_over(places):
-    return board_win(places) or board_full(places)
+def board_win(board):
+    return any([has_row(board, player) or has_column(board, player) or has_diagonal(board, player) for player in ['X', 'O']])
 
+def board_full(board):
+    return len([p for p in board if p == '.']) == 0
+
+def game_over(board):
+    return board_win(board) or board_full(board)
+
+
+
+
+def game(board, player):
+    return [(board, player)] + game(*move(board, get_move(legal_positions(board)), player)) if not game_over(board) else [(board, player)]
 
 
 
 
 def main(argv):
-    print('\nTic Tac Toe Simulator\n')
-
-    board, player = ['.', '.', '.', '.', '.', '.', '.', '.', '.'], 'X'
-
-    while not game_over(board):
-        try:
-            board, player = make_move(board, get_move(legal_positions(board)), player)
-            print(board_string(board))
-        except:
-            print('Unexpected error occcurred.')
-            break
+    try:
+        print('\nTic Tac Toe Simulator\n')
+        print('\n'.join([board_string(state[0]) for state in game(['.', '.', '.', '.', '.', '.', '.', '.', '.'], 'X')[1:]]))
+    except:
+        print('Unexpected error occcurred.')
 
 
 

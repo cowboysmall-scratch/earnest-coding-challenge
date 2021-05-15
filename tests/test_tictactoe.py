@@ -45,16 +45,10 @@ class TestTicTacToe(unittest.TestCase):
 
 
 
-    def test_make_move(self):
+    def test_move(self):
         board1 = ['X', 'X', 'X', 'X', '.', 'X', 'X', 'X', 'X']
         board2 = ['X', 'X', 'X', 'X', 'O', 'X', 'X', 'X', 'X']
-        self.assertEqual(tictactoe.make_move(board1, 4, 'O'), (board2, 'X'))
-
-
-
-    def test_next_player(self):
-        self.assertEqual(tictactoe.next_player('X'), 'O')
-        self.assertEqual(tictactoe.next_player('O'), 'X')
+        self.assertEqual(tictactoe.move(board1, 4, 'O'), (board2, 'X'))
 
 
 
