@@ -4,11 +4,13 @@ import requests
 
 
 
+
 def row_string(row):
     return '  {} | {} | {}  \n'.format(row[0], row[1], row[2])
 
 def board_string(board):
     return '{}\n'.format(' ---+---+--- \n'.join([row_string(board[(i * 3):(i * 3) + 3]) for i in range(3)]))
+
 
 
 
@@ -23,6 +25,7 @@ def next(player):
 
 
 
+
 def has_row(board, player):
     return any(board[(i * 3):(i * 3) + 3].count(player) == 3 for i in range(3))
 
@@ -31,6 +34,7 @@ def has_column(board, player):
 
 def has_diagonal(board, player):
     return [board[0], board[4], board[8]].count(player) == 3 or [board[2], board[4], board[6]].count(player) == 3
+
 
 
 
@@ -45,6 +49,7 @@ def game_over(board):
 
 
 
+
 def get_move(board, player):
     try:
         return int(requests.get('http://localhost:5000/random/choice?{}'.format(join_values(legal_moves(board)))).json()['value'])
@@ -53,6 +58,7 @@ def get_move(board, player):
 
 def join_values(values):
     return '&'.join(['value={}'.format(value) for value in values])
+
 
 
 
@@ -70,6 +76,7 @@ def main(argv):
         print('\n{}\n'.format(board_string(board)))
 
     print('X wins\n\n' if board_win(board, 'X') else 'O wins\n\n' if board_win(board, 'O') else 'Draw\n\n')
+
 
 
 
