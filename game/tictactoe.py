@@ -12,25 +12,14 @@ def board_string(board):
 
 
 
-
-def join_values(values):
-    return '&'.join(['value={}'.format(value) for value in values])
-
-def get_move(values):
-    try:
-        return int(requests.get('http://localhost:5000/random/choice?{}'.format(join_values(values))).json()['value'])
-    except:
-        return random.choice(values)
-
-
-
-
-def legal_positions(board):
+def legal_moves(board):
     return [i for i in range(len(board)) if board[i] == '.']
 
-def move(board, position, player):
-    return [player if i == position else board[i] for i in range(len(board))], 'X' if player == 'O' else 'O'
+def make_move(board, position, player):
+    return [player if i == position else board[i] for i in range(len(board))]
 
+def next(player):
+    return 'X' if player == 'O' else 'O'
 
 
 
@@ -45,31 +34,42 @@ def has_diagonal(board, player):
 
 
 
-
-def board_win(board):
-    return any([has_row(board, player) or has_column(board, player) or has_diagonal(board, player) for player in ['X', 'O']])
+def board_win(board, player):
+    return has_row(board, player) or has_column(board, player) or has_diagonal(board, player)
 
 def board_full(board):
     return len([p for p in board if p == '.']) == 0
 
 def game_over(board):
-    return board_win(board) or board_full(board)
+    return board_win(board, 'X') or board_win(board, 'O') or board_full(board)
 
 
 
+def get_move(values):
+    try:
+        return int(requests.get('http://localhost:5000/random/choice?{}'.format(join_values(values))).json()['value'])
+    except:
+        return random.choice(values)
 
-def game(board, player):
-    return [(board, player)] + game(*move(board, get_move(legal_positions(board)), player)) if not game_over(board) else [(board, player)]
-
+def join_values(values):
+    return '&'.join(['value={}'.format(value) for value in values])
 
 
 
 def main(argv):
-    try:
-        print('\nTic Tac Toe Simulator\n')
-        print('\n'.join([board_string(state[0]) for state in game(['.', '.', '.', '.', '.', '.', '.', '.', '.'], 'X')[1:]]))
-    except:
-        print('Unexpected error occcurred.')
+    print('\nTic Tac Toe Simulator\n')
+    print('\n{}\n'.format(board_string(range(1, 10))))
+
+    board  = ['.', '.', '.', '.', '.', '.', '.', '.', '.']
+    player = 'X'
+
+    while not game_over(board):
+        board  = make_move(board, get_move(legal_moves(board)), player)
+        player = next(player)
+
+        print('\n{}\n'.format(board_string(board)))
+
+    print('X wins\n' if board_win(board, 'X') else 'O wins\n' if board_win(board, 'O') else 'Draw\n')
 
 
 
