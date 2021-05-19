@@ -34,21 +34,21 @@ class TestTicTacToe(unittest.TestCase):
 
 
 
-    def test_legal_positions(self):
+    def test_legal_moves(self):
         board1     = ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
         positions1 = []
-        self.assertEqual(tictactoe.legal_positions(board1), positions1)
+        self.assertEqual(tictactoe.legal_moves(board1), positions1)
 
         board2     = ['X', '.', '.', '.', 'X', '.', '.', '.', 'X']
         positions2 = [1, 2, 3, 5, 6, 7]
-        self.assertEqual(tictactoe.legal_positions(board2), positions2)
+        self.assertEqual(tictactoe.legal_moves(board2), positions2)
 
 
 
-    def test_move(self):
+    def test_make_move(self):
         board1 = ['X', 'X', 'X', 'X', '.', 'X', 'X', 'X', 'X']
         board2 = ['X', 'X', 'X', 'X', 'O', 'X', 'X', 'X', 'X']
-        self.assertEqual(tictactoe.move(board1, 4, 'O'), (board2, 'X'))
+        self.assertEqual(tictactoe.make_move(board1, 4, 'O'), board2)
 
 
 
@@ -95,16 +95,20 @@ class TestTicTacToe(unittest.TestCase):
 
     def test_board_win(self):
         board1 = ['X', 'X', 'X', '.', '.', '.', '.', '.', '.']
-        self.assertTrue(tictactoe.board_win(board1))
+        self.assertTrue(tictactoe.board_win(board1, 'X'))
+        self.assertFalse(tictactoe.board_win(board1, 'O'))
 
         board2 = ['.', '.', 'X', '.', '.', 'X', '.', '.', 'X']
-        self.assertTrue(tictactoe.board_win(board2))
+        self.assertTrue(tictactoe.board_win(board2, 'X'))
+        self.assertFalse(tictactoe.board_win(board2, 'O'))
 
         board3 = ['X', '.', '.', '.', 'X', '.', '.', '.', 'X']
-        self.assertTrue(tictactoe.board_win(board3))
+        self.assertTrue(tictactoe.board_win(board3, 'X'))
+        self.assertFalse(tictactoe.board_win(board3, 'O'))
 
         board4 = ['.', 'O', '.', '.', 'X', '.', '.', 'O', '.']
-        self.assertFalse(tictactoe.board_win(board4))
+        self.assertFalse(tictactoe.board_win(board4, 'X'))
+        self.assertFalse(tictactoe.board_win(board4, 'O'))
 
 
 

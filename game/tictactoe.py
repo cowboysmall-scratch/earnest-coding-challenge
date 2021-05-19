@@ -45,11 +45,11 @@ def game_over(board):
 
 
 
-def get_move(moves):
+def get_move(board, player):
     try:
-        return int(requests.get('http://localhost:5000/random/choice?{}'.format(join_values(moves))).json()['value'])
+        return int(requests.get('http://localhost:5000/random/choice?{}'.format(join_values(legal_moves(board)))).json()['value'])
     except:
-        return random.choice(moves)
+        return random.choice(legal_moves(board))
 
 def join_values(values):
     return '&'.join(['value={}'.format(value) for value in values])
@@ -64,12 +64,12 @@ def main(argv):
     player = 'X'
 
     while not game_over(board):
-        board  = make_move(board, get_move(legal_moves(board)), player)
+        board  = make_move(board, get_move(board, player), player)
         player = next(player)
 
         print('\n{}\n'.format(board_string(board)))
 
-    print('X wins\n' if board_win(board, 'X') else 'O wins\n' if board_win(board, 'O') else 'Draw\n')
+    print('X wins\n\n' if board_win(board, 'X') else 'O wins\n\n' if board_win(board, 'O') else 'Draw\n\n')
 
 
 
